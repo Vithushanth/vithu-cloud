@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How this website is hosted and deployed | Vithushanth Chandrakumar</title>
+<meta name="description" content="A static site with no web server. The files sit in S3, CloudFront serves them from the nearest edge location, and GitHub Actions deploys every push using OIDC with no stored access keys.">
+<link rel="canonical" href="https://vithu.cloud/projects/this-site.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/this-site.html">
+<meta property="og:title" content="How this website is hosted and deployed | Vithushanth Chandrakumar">
+<meta property="og:description" content="A static site with no web server. The files sit in S3, CloudFront serves them from the nearest edge location, and GitHub Actions deploys every push using OIDC with no stored access keys.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>This website and its pipeline</h1>
+    <p class="lede">vithu.cloud is a static site with no web server. The files sit in an S3 bucket, CloudFront serves them over HTTPS from the edge location nearest to you, and a pipeline deploys every change.</p>
+    <dl class="meta"><div><dt>Built with</dt><dd>S3, CloudFront, GitHub Actions, IAM OIDC, CloudFormation, AWS CLI, hand-written HTML, CSS and JavaScript</dd></div></dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/vithu-cloud" rel="noopener">View the code on GitHub</a></div>
+    <div class="path" aria-labelledby="path-title">
+  <h2 id="path-title">How this page reached you</h2>
+  <p>No web server sits behind this site. The details below are read from the response your browser just received.</p>
+  <ol class="hops">
+    <li class="hop"><b>Your browser</b><span>Asks for vithu.cloud over HTTPS</span></li>
+    <li class="hop"><b>DNS</b><span>Points the domain at the nearest CloudFront edge</span></li>
+    <li class="hop live"><b>CloudFront</b><span id="edge">Edge location serves the cached page</span></li>
+    <li class="hop"><b>Amazon S3</b><span>Origin bucket holding the site files, encrypted at rest</span></li>
+  </ol>
+  <dl class="readout" id="readout" hidden>
+    <div><dt>Edge</dt><dd id="r-pop"></dd></div>
+    <div><dt>Cache</dt><dd id="r-cache"></dd></div>
+    <div><dt>Round trip</dt><dd id="r-ms"></dd></div>
+  </dl>
+</div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 268" role="img" aria-label="How vithu.cloud is hosted and deployed" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M700 80.0L774 80.0" marker-end="url(#ah)"/><path class="e" d="M200 204.0L274 204.0" marker-end="url(#ah)"/><path class="e" d="M450 204.0L524 204.0" marker-end="url(#ah)"/><text class="el" x="487.0" y="196.0" text-anchor="middle">token</text><path class="e" d="M700 204.0L862.0 204.0L862.0 116" marker-end="url(#ah)"/><text class="el" x="870.0" y="164.0" text-anchor="start">s3 sync</text><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="85.0" text-anchor="middle">Browser</text><rect class="n " x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="75" text-anchor="middle">DNS</text><text class="ns" x="362.0" y="92" text-anchor="middle">vithu.cloud</text><rect class="n hot" x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">CloudFront</text><text class="ns" x="612.0" y="92" text-anchor="middle">HTTPS, edge cache</text><rect class="n " x="774" y="44" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="71" text-anchor="middle">S3 bucket</text><text class="ns" x="862.0" y="88" text-anchor="middle">vithu.cloud</text><text class="ns" x="862.0" y="103" text-anchor="middle">encrypted at rest</text><rect class="n ext" x="24" y="168" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="199" text-anchor="middle">GitHub</text><text class="ns" x="112.0" y="216" text-anchor="middle">Push to main</text><rect class="n " x="274" y="168" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="199" text-anchor="middle">GitHub Actions</text><text class="ns" x="362.0" y="216" text-anchor="middle">deploy.yml</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="199" text-anchor="middle">IAM role</text><text class="ns" x="612.0" y="216" text-anchor="middle">OIDC, no access keys</text></svg></div><figcaption>Top row: how a visitor reaches the site. Bottom row: how a change reaches the bucket. GitHub proves its identity to AWS with a short-lived token, so no access key is stored anywhere.</figcaption></figure>
+    <div class="prose">
+      <h2>How a visit works</h2>
+      <ol class="steps">
+        <li>Your browser looks up vithu.cloud and is pointed at a CloudFront edge location.</li>
+        <li>CloudFront answers over HTTPS. If the page is in its cache, it replies straight away.</li>
+        <li>If it is not, CloudFront fetches the file from the S3 bucket, returns it and keeps a copy.</li>
+        <li>The panel at the top of this page reads the <code>x-amz-cf-pop</code> and <code>x-cache</code> response headers to show which edge served you and whether the cache was used.</li>
+      </ol>
+      <h2>How a deploy works</h2>
+      <ol class="steps">
+        <li>The repository has a GitHub Actions workflow that runs when the <code>site</code> folder changes on the main branch.</li>
+        <li>GitHub gives the job a signed token that says which repository and branch it is running for.</li>
+        <li>AWS checks the token against an IAM role that trusts only the main branch of this one repository, then hands back credentials that last an hour.</li>
+        <li>The job runs <code>deploy.sh</code>, which uploads the files with cache headers and tells CloudFront to drop its cached copies.</li>
+      </ol>
+      <h2>The trust policy</h2>
+      <pre tabindex="0"><code>Condition:
+  StringEquals:
+    token.actions.githubusercontent.com:aud: sts.amazonaws.com
+    # only the main branch of this one repository may use the role
+    token.actions.githubusercontent.com:sub: !Sub &quot;repo:${GitHubOwner}/${GitHubRepo}:ref:refs/heads/main&quot;</code></pre>
+      <p class="note">The role itself can list and write objects in the site bucket and create CloudFront invalidations. It can do nothing else in the account.</p>
+      <h2>Why it is built this way</h2>
+      <ul>
+        <li>A static site has no server to patch and nothing to scale.</li>
+        <li>CloudFront keeps the page fast wherever the visitor is, and it handles the TLS certificate.</li>
+        <li>OIDC means there is no long-lived access key to leak or rotate.</li>
+        <li>The site has no framework and no build step, so the whole thing is a handful of files that load quickly.</li>
+      </ul>
+      <h2>What I would add next</h2>
+      <ul>
+        <li>The bucket, distribution and DNS records defined as code alongside the role</li>
+        <li>A CloudFront response headers policy for HSTS and a content security policy</li>
+        <li>A preview deployment for pull requests</li>
+      </ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects.html"><small>Back to</small>All projects</a><a class="r" href="/projects/ecs-fargate-app.html"><small>Next project</small>Containerised API on ECS Fargate</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

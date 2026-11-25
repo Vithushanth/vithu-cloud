@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private photo-sharing site | Vithushanth Chandrakumar</title>
+<meta name="description" content="A private, serverless photo and video site for two people. Sign-in is checked at the CloudFront edge, uploads go straight to S3 with presigned URLs, and the whole back end is one CloudFormation template.">
+<link rel="canonical" href="https://vithu.cloud/projects/private-photo-site.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/private-photo-site.html">
+<meta property="og:title" content="Private photo-sharing site | Vithushanth Chandrakumar">
+<meta property="og:description" content="A private, serverless photo and video site for two people. Sign-in is checked at the CloudFront edge, uploads go straight to S3 with presigned URLs, and the whole back end is one CloudFormation template.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Private photo-sharing site</h1>
+    <p class="lede">A private site where two people upload, caption and comment on photos and videos. I run a personal copy with real users and real data. The public repository is the same code with the names, domain and settings removed.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>CloudFront, CloudFront Functions, S3, API Gateway (HTTP API), Lambda (Node.js), DynamoDB, SNS, CloudFormation</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-private-photo-album" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 392" role="img" aria-label="Architecture of the private photo-sharing site" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M362.0 116L362.0 204.0L524 204.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="164.0" text-anchor="start">/media/*</text><path class="e" d="M362.0 116L362.0 328.0L524 328.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="226.0" text-anchor="start">/api/*</text><path class="e" d="M700 328.0L774 328.0" marker-end="url(#ah)"/><path class="e" d="M862.0 292L862.0 240" marker-end="url(#ah)"/><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="75" text-anchor="middle">Browser</text><text class="ns" x="112.0" y="92" text-anchor="middle">Phone or desktop</text><rect class="n hot" x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="71" text-anchor="middle">CloudFront</text><text class="ns" x="362.0" y="88" text-anchor="middle">Sign-in function</text><text class="ns" x="362.0" y="103" text-anchor="middle">on every request</text><rect class="n " x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">S3 bucket</text><text class="ns" x="612.0" y="92" text-anchor="middle">Site files</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="199" text-anchor="middle">S3 bucket</text><text class="ns" x="612.0" y="216" text-anchor="middle">Photos and videos</text><rect class="n " x="524" y="292" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="319" text-anchor="middle">HTTP API</text><text class="ns" x="612.0" y="336" text-anchor="middle">Needs the secret</text><text class="ns" x="612.0" y="351" text-anchor="middle">header</text><rect class="n " x="774" y="292" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="323" text-anchor="middle">Lambda</text><text class="ns" x="862.0" y="340" text-anchor="middle">One function</text><rect class="n " x="774" y="168" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="199" text-anchor="middle">DynamoDB</text><text class="ns" x="862.0" y="216" text-anchor="middle">One table</text></svg></div><figcaption>Everything sits behind one CloudFront distribution. Both buckets are private, and the API refuses any request that did not come through CloudFront.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>Every request goes to CloudFront, where a CloudFront Function checks the sign-in before anything else happens.</li><li>Page files come from one S3 bucket and photos and videos from another. Both block all public access and are readable only through origin access control.</li><li>Requests to <code>/api/*</code> go to an HTTP API and a single Lambda function. CloudFront adds a secret header, and the function refuses any request without it, so the API cannot be called directly.</li><li>To add a photo, the browser asks the function for a presigned URL and uploads the file straight to S3.</li><li>Captions, albums, comments, notes and hearts are rows in one DynamoDB table.</li><li>Deleting moves a photo to a bin. It can be restored for 30 days, then the function erases every stored version of the file.</li><li>Before an upload, the browser fingerprints the photo so the site can warn when it is already in the album.</li><li>When one person adds something, SNS sends the other a short email, at most once an hour.</li></ol>
+      <h2>The rebuild</h2>
+      <p>The first version grew piece by piece. I replaced it with a single CloudFormation install while keeping every existing photo, video and caption.</p>
+      <ol class="steps">
+        <li>I took a full backup of the existing site and its media.</li>
+        <li>I deployed the new stack, which uses the existing media bucket and table and never creates, changes or deletes them.</li>
+        <li>I tested it on its CloudFront address, then switched the domain over.</li>
+        <li>I removed the old distribution, sign-in function, API, Lambda functions and site bucket, so nothing was left running or billing.</li>
+      </ol>
+      <h2>Why I built it</h2>
+      <p>I wanted somewhere private for photos that I control myself, and a project with real users and real data instead of a demo.</p>
+      <h2>What I learned</h2>
+      <ul><li>CloudFront Functions run before the cache and the origins, which makes them a cheap place to put a sign-in in front of a whole site.</li><li>An origin secret header closes the back door. Without it, anyone who found the API address could skip the sign-in.</li><li>Presigned URLs let the browser upload straight to S3 while the bucket stays private.</li><li>Replacing a live system is mostly about order: back up, build alongside, switch, check, then remove the old parts.</li><li>Real users find problems that tests miss, such as a phone keyboard covering the caption box.</li></ul>
+      <h2>Sign-in at the edge</h2>
+      <pre tabindex="0"><code>function handler(event) {
+  var request = event.request;
+  var auth = request.headers.authorization;
+  if (!auth || auth.value !== &#x27;Basic ${Token}&#x27;) {
+    return {
+      statusCode: 401,
+      statusDescription: &#x27;Unauthorized&#x27;,
+      headers: { &#x27;www-authenticate&#x27;: { value: &#x27;Basic realm=&quot;Album&quot;, charset=&quot;UTF-8&quot;&#x27; } }
+    };
+  }
+  if (request.uri.indexOf(&#x27;/media/&#x27;) === 0) {
+    request.uri = request.uri.substring(6);
+  }
+  return request;
+}</code></pre>
+      <p class="note">This is HTTP Basic sign-in with one shared login, which suits a site for two people. For more users I would move to Cognito.</p>
+      <h2>What I would add next</h2>
+      <ul><li>Cognito sign-in with one user per person</li><li>Thumbnails generated on upload, so the grid loads faster</li><li>A lifecycle rule that moves older videos to cheaper storage</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/ecs-fargate-app.html"><small>Previous project</small>Containerised API on ECS Fargate</a><a class="r" href="/projects/resource-guardrail.html"><small>Next project</small>Cost and security guardrail</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

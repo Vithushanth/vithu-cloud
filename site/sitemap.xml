@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://vithu.cloud/</loc></url>
+  <url><loc>https://vithu.cloud/projects.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/this-site.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/ecs-fargate-app.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/private-photo-site.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/resource-guardrail.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/m365-user-onboarding.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/serverless-web-app.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/vpc-as-code.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/uptime-monitor.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/automated-backups.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/monitoring-alerting.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/event-driven-pipeline.html</loc></url>
+  <url><loc>https://vithu.cloud/projects/visitor-counter.html</loc></url>
+  <url><loc>https://vithu.cloud/notes.html</loc></url>
+  <url><loc>https://vithu.cloud/about.html</loc></url>
+  <url><loc>https://vithu.cloud/contact.html</loc></url>
+  <url><loc>https://vithu.cloud/status.html</loc></url>
+</urlset>

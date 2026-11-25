@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Microsoft 365 user onboarding | Vithushanth Chandrakumar</title>
+<meta name="description" content="A PowerShell script that sets up new starters from a CSV file through Microsoft Graph. It creates each account, assigns a licence, adds the user to their groups and logs the result.">
+<link rel="canonical" href="https://vithu.cloud/projects/m365-user-onboarding.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/m365-user-onboarding.html">
+<meta property="og:title" content="Microsoft 365 user onboarding | Vithushanth Chandrakumar">
+<meta property="og:description" content="A PowerShell script that sets up new starters from a CSV file through Microsoft Graph. It creates each account, assigns a licence, adds the user to their groups and logs the result.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Microsoft 365 user onboarding</h1>
+    <p class="lede">New starter setup that takes a list and does the same steps every time, with a dry-run mode and a record of what was done.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>PowerShell, Microsoft Graph, Microsoft Entra ID, Microsoft 365</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/m365-user-onboarding" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 268" role="img" aria-label="Flow of the onboarding script" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M700 80.0L774 80.0" marker-end="url(#ah)"/><path class="e" d="M362.0 116L362.0 168" marker-end="url(#ah)"/><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="75" text-anchor="middle">starters.csv</text><text class="ns" x="112.0" y="92" text-anchor="middle">Name, role, groups</text><rect class="n hot" x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="75" text-anchor="middle">New-Starters.ps1</text><text class="ns" x="362.0" y="92" text-anchor="middle">PowerShell</text><rect class="n " x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">Microsoft Graph</text><text class="ns" x="612.0" y="92" text-anchor="middle">Three scopes</text><rect class="n " x="774" y="44" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="71" text-anchor="middle">Entra ID</text><text class="ns" x="862.0" y="88" text-anchor="middle">User, licence</text><text class="ns" x="862.0" y="103" text-anchor="middle">group membership</text><rect class="n " x="274" y="168" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="199" text-anchor="middle">Log file</text><text class="ns" x="362.0" y="216" text-anchor="middle">One row per starter</text></svg></div><figcaption>The script reads the list, makes each change through Microsoft Graph and logs the outcome for every person.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>The script reads <code>starters.csv</code>, one row per new starter.</li><li>It signs in to Microsoft Graph and checks there are enough free licences before changing anything.</li><li>For each person it creates the account with a random temporary password that must be changed at first sign-in.</li><li>It assigns the Microsoft 365 licence and adds the user to each group listed for them.</li><li>It writes the result for every row to a dated log file. If one row fails, the rest still run.</li></ol>
+      <h2>Why I built it</h2>
+      <p>At Metro Bank and St John Ambulance I set up new starters by hand in Active Directory and Office 365. It is slow, and it is easy to miss a group. This does the same job from a list, the same way every time.</p>
+      <h2>What I learned</h2>
+      <ul><li>How to use <code>ShouldProcess</code> so the script supports <code>-WhatIf</code>. A dry run shows every change without making any.</li><li>Requesting only the Graph scopes the script needs, the same least-privilege idea as an IAM role.</li><li>Checking preconditions first. Running out of licences halfway through a batch is worse than refusing to start.</li></ul>
+      <h2>Every change can be previewed</h2>
+      <pre tabindex="0"><code>if ($PSCmdlet.ShouldProcess($upn, &#x27;Create user&#x27;)) {
+    $password = New-TemporaryPassword
+    $user = New-MgUser -DisplayName &quot;$first $last&quot; `
+        -UserPrincipalName $upn -MailNickname $nickname `
+        -JobTitle $starter.JobTitle -Department $starter.Department `
+        -UsageLocation $UsageLocation -AccountEnabled `
+        -PasswordProfile @{
+            Password = $password
+            ForceChangePasswordNextSignIn = $true
+        }
+}</code></pre>
+      <p class="note">Temporary passwords are shown once on screen and are never written to the log file.</p>
+      <h2>What I would add next</h2>
+      <ul><li>A matching leaver script that blocks sign-in and removes licences</li><li>A welcome email to the manager with the start details</li><li>Running from Azure Automation with a managed identity instead of a signed-in admin</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/resource-guardrail.html"><small>Previous project</small>Cost and security guardrail</a><a class="r" href="/projects/serverless-web-app.html"><small>Next project</small>Serverless web application</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

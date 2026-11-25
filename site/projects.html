@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects | Vithushanth Chandrakumar</title>
+<meta name="description" content="Twelve cloud and automation projects with architecture diagrams and code: containers on ECS Fargate, a CI/CD pipeline with OIDC, serverless apps, Terraform, monitoring and Microsoft 365 automation.">
+<link rel="canonical" href="https://vithu.cloud/projects.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects.html">
+<meta property="og:title" content="Projects | Vithushanth Chandrakumar">
+<meta property="og:description" content="Twelve cloud and automation projects with architecture diagrams and code: containers on ECS Fargate, a CI/CD pipeline with OIDC, serverless apps, Terraform, monitoring and Microsoft 365 automation.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<header class="phead"><div class="wrap">
+  <h1>Projects</h1>
+  <p class="lede">Twelve things I have built. Each has a write-up with an architecture diagram, an explanation of how it works and a link to the code.</p>
+</div></header>
+<section class="flush"><div class="wrap">
+  <ul class="projects"><li>
+  <div><h3><a href="/projects/this-site.html">This website and its pipeline</a></h3><p>A static site with no web server. The files sit in S3, CloudFront serves them from the nearest edge location, and GitHub Actions deploys every push using OIDC with no stored access keys.</p></div>
+  <p class="stack"><small>Built with</small>S3, CloudFront, GitHub Actions, IAM OIDC, CloudFormation, AWS CLI</p>
+  <p class="links"><a class="repo" href="/projects/this-site.html">Read the write-up<span class="sr">: This website and its pipeline</span></a><a class="repo quiet" href="https://github.com/vithushanth/vithu-cloud" rel="noopener">Code on GitHub<span class="sr">: This website and its pipeline</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/ecs-fargate-app.html">Containerised API on ECS Fargate</a></h3><p>A Python web API packaged as a Docker image and run on ECS Fargate behind an Application Load Balancer. The network, load balancer and service are one CloudFormation template.</p></div>
+  <p class="stack"><small>Built with</small>Docker, ECR, ECS Fargate, Application Load Balancer, VPC, CloudFormation, CloudWatch Logs, Python (Flask)</p>
+  <p class="links"><a class="repo" href="/projects/ecs-fargate-app.html">Read the write-up<span class="sr">: Containerised API on ECS Fargate</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-ecs-fargate-app" rel="noopener">Code on GitHub<span class="sr">: Containerised API on ECS Fargate</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/private-photo-site.html">Private photo-sharing site</a></h3><p>A private, serverless photo and video site for two people. Sign-in is checked at the CloudFront edge, uploads go straight to S3 with presigned URLs, and the whole back end is one CloudFormation template.</p></div>
+  <p class="stack"><small>Built with</small>CloudFront, CloudFront Functions, S3, API Gateway (HTTP API), Lambda (Node.js), DynamoDB, SNS, CloudFormation</p>
+  <p class="links"><a class="repo" href="/projects/private-photo-site.html">Read the write-up<span class="sr">: Private photo-sharing site</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-private-photo-album" rel="noopener">Code on GitHub<span class="sr">: Private photo-sharing site</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/resource-guardrail.html">Cost and security guardrail</a></h3><p>A weekly Lambda report on what is costing money or weakening security in an AWS account: unattached volumes, idle Elastic IPs, untagged instances, open admin ports and S3 buckets without a public access block.</p></div>
+  <p class="stack"><small>Built with</small>Lambda (Python 3.12), boto3, EventBridge, SNS, IAM, AWS SAM, pytest with moto</p>
+  <p class="links"><a class="repo" href="/projects/resource-guardrail.html">Read the write-up<span class="sr">: Cost and security guardrail</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-resource-guardrail" rel="noopener">Code on GitHub<span class="sr">: Cost and security guardrail</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/m365-user-onboarding.html">Microsoft 365 user onboarding</a></h3><p>A PowerShell script that sets up new starters from a CSV file through Microsoft Graph. It creates each account, assigns a licence, adds the user to their groups and logs the result.</p></div>
+  <p class="stack"><small>Built with</small>PowerShell, Microsoft Graph, Microsoft Entra ID, Microsoft 365</p>
+  <p class="links"><a class="repo" href="/projects/m365-user-onboarding.html">Read the write-up<span class="sr">: Microsoft 365 user onboarding</span></a><a class="repo quiet" href="https://github.com/vithushanth/m365-user-onboarding" rel="noopener">Code on GitHub<span class="sr">: Microsoft 365 user onboarding</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/serverless-web-app.html">Serverless web application</a></h3><p>A REST API and static frontend with no servers to manage. API Gateway and Lambda sit in front of DynamoDB, and the frontend is served through S3 and CloudFront.</p></div>
+  <p class="stack"><small>Built with</small>API Gateway, Lambda (Python 3.12), DynamoDB, S3, CloudFront, Route 53, IAM, CloudWatch, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/serverless-web-app.html">Read the write-up<span class="sr">: Serverless web application</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-serverless-web-app" rel="noopener">Code on GitHub<span class="sr">: Serverless web application</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/vpc-as-code.html">VPC as code</a></h3><p>A custom VPC with a public and a private subnet, an internet gateway, route tables and security groups, with an EC2 instance in each subnet. All of it is defined in Terraform.</p></div>
+  <p class="stack"><small>Built with</small>Terraform, VPC, subnets, internet gateway, route tables, security groups, EC2 (Amazon Linux 2023)</p>
+  <p class="links"><a class="repo" href="/projects/vpc-as-code.html">Read the write-up<span class="sr">: VPC as code</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-vpc-infrastructure" rel="noopener">Code on GitHub<span class="sr">: VPC as code</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/uptime-monitor.html">Uptime monitor and status page</a></h3><p>A Lambda function checks my websites every five minutes, publishes the results to a live status page and emails me when a site goes down or recovers.</p></div>
+  <p class="stack"><small>Built with</small>Lambda (Python 3.12), EventBridge, S3, CloudFront, SNS, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/uptime-monitor.html">Read the write-up<span class="sr">: Uptime monitor and status page</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-uptime-monitor" rel="noopener">Code on GitHub<span class="sr">: Uptime monitor and status page</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/automated-backups.html">Automated backups and snapshots</a></h3><p>A Lambda function takes EBS snapshots on a daily EventBridge schedule and deletes snapshots older than the retention period. Every run is logged to CloudWatch.</p></div>
+  <p class="stack"><small>Built with</small>Lambda (Python 3.12), boto3, EventBridge, EBS, CloudWatch, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/automated-backups.html">Read the write-up<span class="sr">: Automated backups and snapshots</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-automated-backups" rel="noopener">Code on GitHub<span class="sr">: Automated backups and snapshots</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/monitoring-alerting.html">Monitoring and alerting</a></h3><p>A CloudWatch dashboard tracks EC2 CPU and network metrics. An alarm publishes to SNS and sends an email when CPU stays above 80% for ten minutes. Built in Terraform.</p></div>
+  <p class="stack"><small>Built with</small>Terraform, CloudWatch dashboards and alarms, SNS, EC2</p>
+  <p class="links"><a class="repo" href="/projects/monitoring-alerting.html">Read the write-up<span class="sr">: Monitoring and alerting</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-monitoring-alerting" rel="noopener">Code on GitHub<span class="sr">: Monitoring and alerting</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/event-driven-pipeline.html">Event-driven data pipeline</a></h3><p>Uploading a CSV file to S3 triggers a Lambda function that reads it, works out a summary and writes the result back to the bucket. Nothing polls and nothing waits.</p></div>
+  <p class="stack"><small>Built with</small>Lambda (Python 3.12), S3 event notifications, CloudWatch, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/event-driven-pipeline.html">Read the write-up<span class="sr">: Event-driven data pipeline</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-event-driven-pipeline" rel="noopener">Code on GitHub<span class="sr">: Event-driven data pipeline</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/visitor-counter.html">Visitor counter API</a></h3><p>A serverless API that counts visits to this site. An HTTP API calls a Lambda function, which adds one to a DynamoDB counter with an atomic update.</p></div>
+  <p class="stack"><small>Built with</small>API Gateway (HTTP API), Lambda (Python 3.12), DynamoDB, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/visitor-counter.html">Read the write-up<span class="sr">: Visitor counter API</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-visitor-counter" rel="noopener">Code on GitHub<span class="sr">: Visitor counter API</span></a></p>
+</li></ul>
+  <p class="more">All the code is on <a href="https://github.com/vithushanth" rel="noopener">github.com/vithushanth</a>.</p>
+</div></section>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

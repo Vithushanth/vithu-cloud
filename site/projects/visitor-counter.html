@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Visitor counter API | Vithushanth Chandrakumar</title>
+<meta name="description" content="A serverless API that counts visits to this site. An HTTP API calls a Lambda function, which adds one to a DynamoDB counter with an atomic update.">
+<link rel="canonical" href="https://vithu.cloud/projects/visitor-counter.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/visitor-counter.html">
+<meta property="og:title" content="Visitor counter API | Vithushanth Chandrakumar">
+<meta property="og:description" content="A serverless API that counts visits to this site. An HTTP API calls a Lambda function, which adds one to a DynamoDB counter with an atomic update.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Visitor counter API</h1>
+    <p class="lede">A small API that this site calls on every visit. The total in the footer of this page comes from it.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>API Gateway (HTTP API), Lambda (Python 3.12), DynamoDB, AWS SAM</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-visitor-counter" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 144" role="img" aria-label="Architecture of the visitor counter" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M700 80.0L774 80.0" marker-end="url(#ah)"/><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="75" text-anchor="middle">vithu.cloud</text><text class="ns" x="112.0" y="92" text-anchor="middle">Page load</text><rect class="n " x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="71" text-anchor="middle">HTTP API</text><text class="ns" x="362.0" y="88" text-anchor="middle">POST /hit</text><text class="ns" x="362.0" y="103" text-anchor="middle">CORS and throttling</text><rect class="n hot" x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">Lambda</text><text class="ns" x="612.0" y="92" text-anchor="middle">app.py</text><rect class="n " x="774" y="44" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="71" text-anchor="middle">DynamoDB</text><text class="ns" x="862.0" y="88" text-anchor="middle">One item</text><text class="ns" x="862.0" y="103" text-anchor="middle">atomic ADD</text></svg></div><figcaption>One route, one function, one table. The API only accepts browser calls from vithu.cloud.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>When a page loads, the site sends <code>POST /hit</code> to the API once per browser session.</li><li>API Gateway checks the request against its CORS and throttling settings, then invokes the Lambda function.</li><li>The function runs one DynamoDB update that adds one to the counter and returns the new value.</li><li>The site shows the total in the footer. If the API does not answer, the footer simply shows nothing.</li></ol>
+      <h2>Why I built it</h2>
+      <p>My other projects can only be read about. I wanted one that visitors can see working.</p>
+      <h2>What I learned</h2>
+      <ul><li>DynamoDB's <code>ADD</code> is atomic, so two visits at the same moment are both counted. Reading the value and writing it back would lose one.</li><li>An HTTP API is cheaper and simpler than a REST API when all it does is call a function.</li><li>Throttling is a cost control. The API allows 2 requests a second, so nobody can run up a bill.</li></ul>
+      <h2>One atomic update</h2>
+      <pre tabindex="0"><code>result = table.update_item(
+    Key={&quot;id&quot;: &quot;site&quot;},
+    UpdateExpression=&quot;ADD visits :one&quot;,
+    ExpressionAttributeValues={&quot;:one&quot;: 1},
+    ReturnValues=&quot;UPDATED_NEW&quot;,
+)
+visits = int(result[&quot;Attributes&quot;][&quot;visits&quot;])</code></pre>
+      <p class="note">The function's role allows one action, <code>dynamodb:UpdateItem</code>, on one table.</p>
+      <h2>What I would add next</h2>
+      <ul><li>Unique visitors per day instead of raw page loads</li><li>A CloudWatch alarm on API errors</li><li>A custom domain such as api.vithu.cloud</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/event-driven-pipeline.html"><small>Previous project</small>Event-driven data pipeline</a><a class="r" href="/projects.html"><small>Back to</small>All projects</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

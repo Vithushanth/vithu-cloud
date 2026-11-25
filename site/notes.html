@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AWS notes | Vithushanth Chandrakumar</title>
+<meta name="description" content="Short explanations of AWS ideas: public subnets, security groups and network ACLs, least privilege for Lambda, CloudWatch alarms and event-driven design.">
+<link rel="canonical" href="https://vithu.cloud/notes.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/notes.html">
+<meta property="og:title" content="AWS notes | Vithushanth Chandrakumar">
+<meta property="og:description" content="Short explanations of AWS ideas: public subnets, security groups and network ACLs, least privilege for Lambda, CloudWatch alarms and event-driven design.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html">Projects</a></li><li><a href="/notes.html" aria-current="page">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<header class="phead"><div class="wrap">
+  <h1>Notes</h1>
+  <p class="lede">Short explanations of the AWS ideas behind my projects. Writing them down is how I check that I understand them.</p>
+</div></header>
+<div class="wrap"><div class="prose notes">
+
+  <article id="oidc">
+    <h2>Why OIDC beats stored access keys</h2>
+    <p>A pipeline needs permission to deploy. The old way is to create an IAM user, generate an access key and paste it into the pipeline's secrets. That key works from anywhere, for anyone who gets hold of it, until somebody remembers to rotate it.</p>
+    <p>With OIDC there is no key. GitHub gives each job a signed token saying which repository and branch it is running for. An IAM role trusts tokens from one repository and one branch, and AWS swaps the token for credentials that expire within the hour.</p>
+    <p>Nothing long-lived is stored, so there is nothing to leak and nothing to rotate. The trust policy is also a precise statement of who may deploy.</p>
+    <p class="see">From the project <a href="/projects/this-site.html">This website and its pipeline</a></p>
+  </article>
+
+  <article id="public-subnet">
+    <h2>What makes a subnet public</h2>
+    <p>A subnet is public when its route table has a route to an internet gateway. Nothing else decides it. The name, the address range and the instances inside make no difference.</p>
+    <p>In my VPC, the public subnet is associated with a route table that sends <code>0.0.0.0/0</code> to the internet gateway. The private subnet uses the VPC's main route table, which only has the local route. An instance there cannot be reached from the internet and cannot reach out either.</p>
+    <p>An instance in a public subnet also needs a public IP address. A route with no public address still leaves it unreachable.</p>
+    <p class="see">From the project <a href="/projects/vpc-as-code.html">VPC as code</a></p>
+  </article>
+
+  <article id="sg-nacl">
+    <h2>Security groups and network ACLs</h2>
+    <p>Both filter traffic, but at different points and in different ways.</p>
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 144" role="img" aria-label="Where security groups and network ACLs apply" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M700 80.0L774 80.0" marker-end="url(#ah)"/><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="85.0" text-anchor="middle">Traffic in</text><rect class="n " x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="71" text-anchor="middle">Network ACL</text><text class="ns" x="362.0" y="88" text-anchor="middle">At the subnet edge</text><text class="ns" x="362.0" y="103" text-anchor="middle">Stateless</text><rect class="n hot" x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="71" text-anchor="middle">Security group</text><text class="ns" x="612.0" y="88" text-anchor="middle">At the instance</text><text class="ns" x="612.0" y="103" text-anchor="middle">Stateful</text><rect class="n " x="774" y="44" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="85.0" text-anchor="middle">EC2 instance</text></svg></div><figcaption>Inbound traffic passes the subnet network ACL first, then the security group on the instance.</figcaption></figure>
+    <ul>
+      <li>A <strong>security group</strong> protects an instance. It is stateful, so if a request is allowed in, the reply is allowed out automatically. It only has allow rules.</li>
+      <li>A <strong>network ACL</strong> protects a subnet. It is stateless, so inbound and outbound rules are checked separately and the reply needs its own rule. It can allow and deny, and rules are checked in number order.</li>
+    </ul>
+    <p>I use security groups for nearly everything and keep network ACLs for broad rules, such as blocking an address range from a whole subnet.</p>
+    <p class="see">From the project <a href="/projects/vpc-as-code.html">VPC as code</a></p>
+  </article>
+
+  <article id="least-privilege">
+    <h2>Least privilege for a Lambda function</h2>
+    <p>Every Lambda function runs with an IAM execution role. The role should allow exactly what the function does and nothing more.</p>
+    <p>My serverless app has two functions. The one that lists items has read access to one DynamoDB table. The one that adds items has write access to the same table. Neither can touch any other table, and the read function cannot write.</p>
+    <p>If a function is ever compromised or has a bug, the damage stops at what its role allows. Splitting permissions by function costs a few extra lines in the template.</p>
+    <p class="see">From the project <a href="/projects/serverless-web-app.html">Serverless web application</a></p>
+  </article>
+
+  <article id="alarm">
+    <h2>The five parts of a CloudWatch alarm</h2>
+    <dl class="skills">
+      <div><dt>Metric</dt><dd>What is measured. Mine is <code>CPUUtilization</code> for one EC2 instance.</dd></div>
+      <div><dt>Statistic</dt><dd>How the data points are combined. Mine is the average.</dd></div>
+      <div><dt>Period</dt><dd>The window each data point covers. Mine is 300 seconds.</dd></div>
+      <div><dt>Evaluation periods</dt><dd>How many periods in a row must breach before the alarm fires. Mine is 2.</dd></div>
+      <div><dt>Threshold</dt><dd>The value to compare against. Mine is 80%.</dd></div>
+    </dl>
+    <p>Together they read as: alert me when average CPU is above 80% for ten minutes. Two evaluation periods stop a single short spike from sending an email.</p>
+    <p class="see">From the project <a href="/projects/monitoring-alerting.html">Monitoring and alerting</a></p>
+  </article>
+
+  <article id="event-driven">
+    <h2>Why event-driven beats polling</h2>
+    <p>A polling system checks for work on a timer. Most checks find nothing, and new work waits until the next check.</p>
+    <p>An event-driven system starts work when something happens. In my pipeline, the upload to S3 is the trigger. The file is processed within moments, and when nothing is uploaded, nothing runs and nothing is billed.</p>
+    <p>The thing that produces the event also does not need to know what consumes it. I could add a second function that reacts to the same uploads without changing the first.</p>
+    <p class="see">From the project <a href="/projects/event-driven-pipeline.html">Event-driven data pipeline</a></p>
+  </article>
+
+</div></div>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

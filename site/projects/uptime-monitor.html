@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uptime monitor and status page | Vithushanth Chandrakumar</title>
+<meta name="description" content="A Lambda function checks my websites every five minutes, publishes the results to a live status page and emails me when a site goes down or recovers.">
+<link rel="canonical" href="https://vithu.cloud/projects/uptime-monitor.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/uptime-monitor.html">
+<meta property="og:title" content="Uptime monitor and status page | Vithushanth Chandrakumar">
+<meta property="og:description" content="A Lambda function checks my websites every five minutes, publishes the results to a live status page and emails me when a site goes down or recovers.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Uptime monitor and status page</h1>
+    <p class="lede">Monitoring from the outside, the way a visitor sees the site, with a public status page that needs no API and no database.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>Lambda (Python 3.12), EventBridge, S3, CloudFront, SNS, AWS SAM</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-uptime-monitor" rel="noopener">View the code on GitHub</a><a class="btn" href="/status.html">Open the live status page</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 392" role="img" aria-label="Architecture of the uptime monitor" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><text class="el" x="487.0" y="72.0" text-anchor="middle">check</text><path class="e" d="M362.0 116L362.0 204.0L524 204.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="164.0" text-anchor="start">results</text><path class="e" d="M700 204.0L774 204.0" marker-end="url(#ah)"/><path class="e" d="M362.0 116L362.0 328.0L524 328.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="226.0" text-anchor="start">alert</text><path class="e" d="M700 328.0L774 328.0" marker-end="url(#ah)"/><rect class="n " x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="75" text-anchor="middle">EventBridge</text><text class="ns" x="112.0" y="92" text-anchor="middle">Every 5 minutes</text><rect class="n hot" x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="75" text-anchor="middle">Lambda</text><text class="ns" x="362.0" y="92" text-anchor="middle">check.py</text><rect class="n ext" x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">Websites</text><text class="ns" x="612.0" y="92" text-anchor="middle">HTTP request</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="199" text-anchor="middle">S3 bucket</text><text class="ns" x="612.0" y="216" text-anchor="middle">status/status.json</text><rect class="n ext" x="774" y="168" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="199" text-anchor="middle">Status page</text><text class="ns" x="862.0" y="216" text-anchor="middle">vithu.cloud</text><rect class="n " x="524" y="292" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="323" text-anchor="middle">SNS topic</text><text class="ns" x="612.0" y="340" text-anchor="middle">On change only</text><rect class="n ext" x="774" y="292" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="333.0" text-anchor="middle">Email</text></svg></div><figcaption>The results are a file in the website bucket. The status page reads it through the CloudFront distribution that already exists.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>EventBridge runs the function every five minutes.</li><li>The function requests each URL and records the HTTP status and the response time.</li><li>It loads the previous results, adds the new check and keeps the last 24 hours.</li><li>It writes <code>status/status.json</code> to the website bucket with a 60-second cache lifetime.</li><li>If a site has changed state since the last check, it publishes to SNS, which sends an email.</li><li>The <a href="/status.html">status page</a> on this site reads the file and draws the history.</li></ol>
+      <h2>Why I built it</h2>
+      <p>My monitoring project watches an EC2 instance from the inside. This one watches from the outside. I also wanted a status page with as few moving parts as possible.</p>
+      <h2>What I learned</h2>
+      <ul><li>The function can read and write one prefix in the bucket, <code>status/*</code>, and nothing else.</li><li>Alerting on the change of state keeps the noise down. A long outage sends one email, not one every five minutes.</li><li>A short <code>Cache-Control</code> lifetime stops CloudFront serving stale results.</li></ul>
+      <h2>Alert on the change, not on every failure</h2>
+      <pre tabindex="0"><code># tell someone only when the state changes, not on every failed check
+if topic and &quot;up&quot; in before and before[&quot;up&quot;] != up:
+    state = &quot;is back up&quot; if up else &quot;is DOWN&quot;
+    sns.publish(
+        TopicArn=topic,
+        Subject=f&quot;{url} {state}&quot;[:100],
+        Message=f&quot;{url} {state} at {now.isoformat()} &quot;
+                f&quot;(HTTP status {status}, {ms} ms).&quot;,
+    )</code></pre>
+      <p class="note">The tests fake S3 and SNS with moto and walk a site through up, down, still down and recovered, checking exactly two alerts are sent.</p>
+      <h2>What I would add next</h2>
+      <ul><li>Checks from a second region, to tell a site outage from a regional problem</li><li>TLS certificate expiry warnings</li><li>CloudWatch Synthetics for full browser checks</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/vpc-as-code.html"><small>Previous project</small>VPC as code</a><a class="r" href="/projects/automated-backups.html"><small>Next project</small>Automated backups and snapshots</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

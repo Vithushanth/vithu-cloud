@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VPC as code | Vithushanth Chandrakumar</title>
+<meta name="description" content="A custom VPC with a public and a private subnet, an internet gateway, route tables and security groups, with an EC2 instance in each subnet. All of it is defined in Terraform.">
+<link rel="canonical" href="https://vithu.cloud/projects/vpc-as-code.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/vpc-as-code.html">
+<meta property="og:title" content="VPC as code | Vithushanth Chandrakumar">
+<meta property="og:description" content="A custom VPC with a public and a private subnet, an internet gateway, route tables and security groups, with an EC2 instance in each subnet. All of it is defined in Terraform.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>VPC as code</h1>
+    <p class="lede">An AWS network built from nothing in Terraform. One command creates it and one command removes it.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>Terraform, VPC, subnets, internet gateway, route tables, security groups, EC2 (Amazon Linux 2023)</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-vpc-infrastructure" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 724 268" role="img" aria-label="Architecture of the VPC" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><rect class="g" x="508" y="18" width="208" height="238" rx="14"/><text class="gl" x="520" y="35">VPC 10.0.0.0/16, eu-west-2a</text><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><text class="el" x="487.0" y="72.0" text-anchor="middle">0.0.0.0/0</text><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="85.0" text-anchor="middle">Internet</text><rect class="n " x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="75" text-anchor="middle">Internet gateway</text><text class="ns" x="362.0" y="92" text-anchor="middle">Attached to the VPC</text><rect class="n hot" x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="71" text-anchor="middle">Public subnet</text><text class="ns" x="612.0" y="88" text-anchor="middle">10.0.1.0/24</text><text class="ns" x="612.0" y="103" text-anchor="middle">EC2 with web-sg</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="195" text-anchor="middle">Private subnet</text><text class="ns" x="612.0" y="212" text-anchor="middle">10.0.2.0/24</text><text class="ns" x="612.0" y="227" text-anchor="middle">EC2, no public IP</text><text class="el" x="612.0" y="258" text-anchor="middle">No route to the internet</text></svg></div><figcaption>Only the public subnet has a route to the internet gateway. The private subnet has none, so its instance cannot be reached from outside.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>Terraform creates a VPC with the address range <code>10.0.0.0/16</code> in the London region.</li><li>It adds a public subnet (<code>10.0.1.0/24</code>) and a private subnet (<code>10.0.2.0/24</code>).</li><li>An internet gateway is attached to the VPC, and a route table sends <code>0.0.0.0/0</code> from the public subnet to it.</li><li>A security group allows HTTP in from anywhere and SSH in from one address range that I pass in as a variable.</li><li>One EC2 instance launches in each subnet to show the difference in reach.</li></ol>
+      <h2>Why I built it</h2>
+      <p>Networking is the part of AWS that catches most people out, so I built a VPC from scratch instead of using the default one. Writing it as code made me work out how subnets, route tables and gateways relate, because Terraform will not let you skip a step.</p>
+      <h2>What I learned</h2>
+      <ul><li>A subnet is public only because its route table points at an internet gateway. The name means nothing.</li><li>A security group is stateful and works at the instance. A network ACL is stateless and works at the subnet.</li><li>Terraform state tracks the real infrastructure, which is why I run <code>plan</code> before every <code>apply</code>.</li></ul>
+      <h2>The route that makes a subnet public</h2>
+      <pre tabindex="0"><code>resource &quot;aws_route_table&quot; &quot;public&quot; {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block = &quot;0.0.0.0/0&quot;
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = { Name = &quot;public-rt&quot; }
+}
+
+resource &quot;aws_route_table_association&quot; &quot;public&quot; {
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
+}</code></pre>
+      <p class="note">SSH is allowed only from an address range passed in as a variable, so the instance is never open to the whole internet. HTTP stays open because the public host is meant to be reachable.</p>
+      <h2>What I would add next</h2>
+      <ul><li>A NAT gateway so private instances can fetch updates without being reachable</li><li>Reusable Terraform modules</li><li>Subnets across several Availability Zones for high availability</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/serverless-web-app.html"><small>Previous project</small>Serverless web application</a><a class="r" href="/projects/uptime-monitor.html"><small>Next project</small>Uptime monitor and status page</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

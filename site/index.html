@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vithushanth Chandrakumar | Cloud engineer, London</title>
+<meta name="description" content="AWS Certified Solutions Architect Associate in London. Four years of enterprise IT support at Metro Bank and St John Ambulance, now building serverless, containerised and automated infrastructure on AWS.">
+<link rel="canonical" href="https://vithu.cloud/">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/">
+<meta property="og:title" content="Vithushanth Chandrakumar | Cloud engineer, London">
+<meta property="og:description" content="AWS Certified Solutions Architect Associate in London. Four years of enterprise IT support at Metro Bank and St John Ambulance, now building serverless, containerised and automated infrastructure on AWS.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Vithushanth Chandrakumar","jobTitle":"Cloud Engineer","url":"https://vithu.cloud/",
+"address":{"@type":"PostalAddress","addressLocality":"London","addressCountry":"GB"},
+"knowsAbout":["Amazon Web Services","Serverless","Docker","Terraform","Python","Microsoft 365"],
+"hasCredential":[{"@type":"EducationalOccupationalCredential","name":"AWS Certified Solutions Architect - Associate (SAA-C03)"},{"@type":"EducationalOccupationalCredential","name":"CompTIA A+"}],
+"sameAs":["https://github.com/vithushanth","https://linkedin.com/in/vithu-shanth"]}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/" aria-current="page">Home</a></li><li><a href="/projects.html">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<header class="hero"><div class="wrap">
+  <p class="status"><i aria-hidden="true"></i>Available now for junior cloud, AWS and DevOps roles in London</p>
+  <h1>Vithushanth Chandrakumar</h1>
+  <p class="lede">Cloud engineer and <strong>AWS Certified Solutions Architect Associate</strong>. I spent four years keeping enterprise IT running at Metro Bank and St John Ambulance. Now I build serverless, containerised and automated systems on AWS, and this site is one of them.</p>
+  <div class="actions">
+    <a class="btn primary" href="/contact.html">Get in touch</a>
+    <a class="btn" href="/projects.html">See the projects</a>
+    <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+  </div>
+  <div class="path" aria-labelledby="path-title">
+  <h2 id="path-title">How this page reached you</h2>
+  <p>No web server sits behind this site. The details below are read from the response your browser just received.</p>
+  <ol class="hops">
+    <li class="hop"><b>Your browser</b><span>Asks for vithu.cloud over HTTPS</span></li>
+    <li class="hop"><b>DNS</b><span>Points the domain at the nearest CloudFront edge</span></li>
+    <li class="hop live"><b>CloudFront</b><span id="edge">Edge location serves the cached page</span></li>
+    <li class="hop"><b>Amazon S3</b><span>Origin bucket holding the site files, encrypted at rest</span></li>
+  </ol>
+  <dl class="readout" id="readout" hidden>
+    <div><dt>Edge</dt><dd id="r-pop"></dd></div>
+    <div><dt>Cache</dt><dd id="r-cache"></dd></div>
+    <div><dt>Round trip</dt><dd id="r-ms"></dd></div>
+  </dl>
+</div>
+</div></header>
+<section><div class="wrap">
+  <h2>Things I have built</h2>
+  <p class="intro">Six of my twelve projects. Each has a write-up with an architecture diagram and an explanation of how it works.</p>
+  <ul class="projects"><li>
+  <div><h3><a href="/projects/this-site.html">This website and its pipeline</a></h3><p>A static site with no web server. The files sit in S3, CloudFront serves them from the nearest edge location, and GitHub Actions deploys every push using OIDC with no stored access keys.</p></div>
+  <p class="stack"><small>Built with</small>S3, CloudFront, GitHub Actions, IAM OIDC, CloudFormation, AWS CLI</p>
+  <p class="links"><a class="repo" href="/projects/this-site.html">Read the write-up<span class="sr">: This website and its pipeline</span></a><a class="repo quiet" href="https://github.com/vithushanth/vithu-cloud" rel="noopener">Code on GitHub<span class="sr">: This website and its pipeline</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/ecs-fargate-app.html">Containerised API on ECS Fargate</a></h3><p>A Python web API packaged as a Docker image and run on ECS Fargate behind an Application Load Balancer. The network, load balancer and service are one CloudFormation template.</p></div>
+  <p class="stack"><small>Built with</small>Docker, ECR, ECS Fargate, Application Load Balancer, VPC, CloudFormation, CloudWatch Logs, Python (Flask)</p>
+  <p class="links"><a class="repo" href="/projects/ecs-fargate-app.html">Read the write-up<span class="sr">: Containerised API on ECS Fargate</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-ecs-fargate-app" rel="noopener">Code on GitHub<span class="sr">: Containerised API on ECS Fargate</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/private-photo-site.html">Private photo-sharing site</a></h3><p>A private, serverless photo and video site for two people. Sign-in is checked at the CloudFront edge, uploads go straight to S3 with presigned URLs, and the whole back end is one CloudFormation template.</p></div>
+  <p class="stack"><small>Built with</small>CloudFront, CloudFront Functions, S3, API Gateway (HTTP API), Lambda (Node.js), DynamoDB, SNS, CloudFormation</p>
+  <p class="links"><a class="repo" href="/projects/private-photo-site.html">Read the write-up<span class="sr">: Private photo-sharing site</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-private-photo-album" rel="noopener">Code on GitHub<span class="sr">: Private photo-sharing site</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/resource-guardrail.html">Cost and security guardrail</a></h3><p>A weekly Lambda report on what is costing money or weakening security in an AWS account: unattached volumes, idle Elastic IPs, untagged instances, open admin ports and S3 buckets without a public access block.</p></div>
+  <p class="stack"><small>Built with</small>Lambda (Python 3.12), boto3, EventBridge, SNS, IAM, AWS SAM, pytest with moto</p>
+  <p class="links"><a class="repo" href="/projects/resource-guardrail.html">Read the write-up<span class="sr">: Cost and security guardrail</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-resource-guardrail" rel="noopener">Code on GitHub<span class="sr">: Cost and security guardrail</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/m365-user-onboarding.html">Microsoft 365 user onboarding</a></h3><p>A PowerShell script that sets up new starters from a CSV file through Microsoft Graph. It creates each account, assigns a licence, adds the user to their groups and logs the result.</p></div>
+  <p class="stack"><small>Built with</small>PowerShell, Microsoft Graph, Microsoft Entra ID, Microsoft 365</p>
+  <p class="links"><a class="repo" href="/projects/m365-user-onboarding.html">Read the write-up<span class="sr">: Microsoft 365 user onboarding</span></a><a class="repo quiet" href="https://github.com/vithushanth/m365-user-onboarding" rel="noopener">Code on GitHub<span class="sr">: Microsoft 365 user onboarding</span></a></p>
+</li><li>
+  <div><h3><a href="/projects/serverless-web-app.html">Serverless web application</a></h3><p>A REST API and static frontend with no servers to manage. API Gateway and Lambda sit in front of DynamoDB, and the frontend is served through S3 and CloudFront.</p></div>
+  <p class="stack"><small>Built with</small>API Gateway, Lambda (Python 3.12), DynamoDB, S3, CloudFront, Route 53, IAM, CloudWatch, AWS SAM</p>
+  <p class="links"><a class="repo" href="/projects/serverless-web-app.html">Read the write-up<span class="sr">: Serverless web application</span></a><a class="repo quiet" href="https://github.com/vithushanth/aws-serverless-web-app" rel="noopener">Code on GitHub<span class="sr">: Serverless web application</span></a></p>
+</li></ul>
+  <p class="more"><a href="/projects.html">See all twelve projects</a></p>
+</div></section>
+<section><div class="wrap">
+  <h2>From service desk to cloud</h2>
+  <div class="about">
+    <div>
+      <p>I worked for over four years as a Service Desk Analyst at Metro Bank and St John Ambulance. I managed user access, networking, Active Directory and incident resolution for hundreds of users.</p>
+      <p>I then moved into cloud on purpose. I passed the AWS Solutions Architect Associate exam and built these projects to turn the theory into working systems.</p>
+      <p><a class="textlink" href="/about.html">Read more about my background and skills</a></p>
+    </div>
+    <dl class="facts">
+      <div><dt>Certifications</dt><dd>AWS SAA-C03, CompTIA A+</dd></div>
+      <div><dt>IT experience</dt><dd>4+ years</dd></div>
+      <div><dt>Infrastructure as code</dt><dd>Terraform, CloudFormation</dd></div>
+      <div><dt>Scripting</dt><dd>Python, Bash, PowerShell</dd></div>
+      <div><dt>Location</dt><dd>London, UK</dd></div>
+      <div><dt>Availability</dt><dd>Immediate</dd></div>
+    </dl>
+  </div>
+</div></section>
+<section><div class="wrap">
+  <h2>Notes on what I have learned</h2>
+  <p class="intro">Short explanations of the ideas behind the projects, written the way I would explain them to a colleague.</p>
+  <ul class="notelist">
+    <li><a href="/notes.html#oidc">Why OIDC beats stored access keys</a></li>
+    <li><a href="/notes.html#public-subnet">What makes a subnet public</a></li>
+    <li><a href="/notes.html#sg-nacl">Security groups and network ACLs</a></li>
+    <li><a href="/notes.html#least-privilege">Least privilege for a Lambda function</a></li>
+    <li><a href="/notes.html#alarm">The five parts of a CloudWatch alarm</a></li>
+    <li><a href="/notes.html#event-driven">Why event-driven beats polling</a></li>
+  </ul>
+</div></section>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

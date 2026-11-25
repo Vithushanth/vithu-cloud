@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automated backups and snapshots | Vithushanth Chandrakumar</title>
+<meta name="description" content="A Lambda function takes EBS snapshots on a daily EventBridge schedule and deletes snapshots older than the retention period. Every run is logged to CloudWatch.">
+<link rel="canonical" href="https://vithu.cloud/projects/automated-backups.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/automated-backups.html">
+<meta property="og:title" content="Automated backups and snapshots | Vithushanth Chandrakumar">
+<meta property="og:description" content="A Lambda function takes EBS snapshots on a daily EventBridge schedule and deletes snapshots older than the retention period. Every run is logged to CloudWatch.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Automated backups and snapshots</h1>
+    <p class="lede">Backups that run every night without anyone remembering, and clean up after themselves so storage costs stay flat.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>Lambda (Python 3.12), boto3, EventBridge, EBS, CloudWatch, AWS SAM</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-automated-backups" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 724 392" role="img" aria-label="Architecture of the automated backup system" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 204.0L274 204.0" marker-end="url(#ah)"/><path class="e" d="M362.0 168L362.0 80.0L524 80.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="128.0" text-anchor="start">snapshot</text><path class="e" d="M450 204.0L524 204.0" marker-end="url(#ah)"/><text class="el" x="487.0" y="196.0" text-anchor="middle">delete</text><path class="e" d="M362.0 240L362.0 328.0L524 328.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="288.0" text-anchor="start">logs</text><rect class="n " x="24" y="168" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="199" text-anchor="middle">EventBridge</text><text class="ns" x="112.0" y="216" text-anchor="middle">Daily at 02:00 UTC</text><rect class="n hot" x="274" y="168" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="199" text-anchor="middle">Lambda</text><text class="ns" x="362.0" y="216" text-anchor="middle">backup.py</text><rect class="n " x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">EBS volumes</text><text class="ns" x="612.0" y="92" text-anchor="middle">Tagged Backup=true</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="199" text-anchor="middle">EBS snapshots</text><text class="ns" x="612.0" y="216" text-anchor="middle">Older than 7 days</text><rect class="n " x="524" y="292" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="323" text-anchor="middle">CloudWatch Logs</text><text class="ns" x="612.0" y="340" text-anchor="middle">Every run</text></svg></div><figcaption>One scheduled function does both jobs. It snapshots tagged volumes, then removes its own snapshots once they pass the retention period.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>EventBridge triggers the function every day at 02:00 UTC with the rule <code>cron(0 2 * * ? *)</code>.</li><li>The function finds every EBS volume tagged <code>Backup=true</code>.</li><li>It creates a snapshot of each one and tags it with <code>CreatedBy=automated-backup</code> and the date.</li><li>It then lists the snapshots carrying that tag and deletes any older than <code>RETENTION_DAYS</code>, which is set to 7.</li><li>Each snapshot created or deleted is written to CloudWatch Logs.</li></ol>
+      <h2>Why I built it</h2>
+      <p>Manual backups get forgotten. I wanted a system that protects data on its own and also removes old snapshots, because snapshot costs build up quietly when nobody deletes them.</p>
+      <h2>What I learned</h2>
+      <ul><li>How to filter AWS API results by tag, so the function only ever touches resources it is meant to.</li><li>Tags are what make automation and cost control possible. Opting a volume in is a single tag.</li><li>How to write automation that is safe to run again and again. The cleanup only deletes snapshots the function created itself.</li></ul>
+      <h2>Deleting only what the function created</h2>
+      <pre tabindex="0"><code>def delete_old_snapshots():
+    deleted = []
+    cutoff = datetime.datetime.now(datetime.timezone.utc) \
+        - datetime.timedelta(days=RETENTION_DAYS)
+    snapshots = ec2.describe_snapshots(
+        OwnerIds=[&quot;self&quot;],
+        Filters=[{&quot;Name&quot;: &quot;tag:CreatedBy&quot;,
+                  &quot;Values&quot;: [&quot;automated-backup&quot;]}],
+    )[&quot;Snapshots&quot;]
+
+    for snap in snapshots:
+        if snap[&quot;StartTime&quot;] &lt; cutoff:
+            ec2.delete_snapshot(SnapshotId=snap[&quot;SnapshotId&quot;])
+            deleted.append(snap[&quot;SnapshotId&quot;])
+    return deleted</code></pre>
+      <p class="note">To opt a volume in, tag it: <code>aws ec2 create-tags --resources vol-XXXX --tags Key=Backup,Value=true</code></p>
+      <h2>What I would add next</h2>
+      <ul><li>A summary sent to SNS or Slack after each run</li><li>Copies of snapshots in a second region for disaster recovery</li><li>AWS Backup in place of the custom code, for managed retention policies</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/uptime-monitor.html"><small>Previous project</small>Uptime monitor and status page</a><a class="r" href="/projects/monitoring-alerting.html"><small>Next project</small>Monitoring and alerting</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

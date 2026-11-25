@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Serverless web application | Vithushanth Chandrakumar</title>
+<meta name="description" content="A REST API and static frontend with no servers to manage. API Gateway and Lambda sit in front of DynamoDB, and the frontend is served through S3 and CloudFront.">
+<link rel="canonical" href="https://vithu.cloud/projects/serverless-web-app.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/serverless-web-app.html">
+<meta property="og:title" content="Serverless web application | Vithushanth Chandrakumar">
+<meta property="og:description" content="A REST API and static frontend with no servers to manage. API Gateway and Lambda sit in front of DynamoDB, and the frontend is served through S3 and CloudFront.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Serverless web application</h1>
+    <p class="lede">A web application where every layer is managed by AWS. It scales on its own, and it costs nothing while nobody is using it.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>API Gateway, Lambda (Python 3.12), DynamoDB, S3, CloudFront, Route 53, IAM, CloudWatch, AWS SAM</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-serverless-web-app" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 392" role="img" aria-label="Architecture of the serverless web application" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><text class="el" x="237.0" y="72.0" text-anchor="middle">page</text><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><path class="e" d="M112.0 116L112.0 204.0L274 204.0" marker-end="url(#ah)"/><text class="el" x="120.0" y="164.0" text-anchor="start">GET and POST</text><path class="e" d="M450 204.0L524 204.0" marker-end="url(#ah)"/><path class="e" d="M700 204.0L774 204.0" marker-end="url(#ah)"/><path class="e" d="M612.0 240L612.0 292" marker-end="url(#ah)"/><text class="el" x="620.0" y="270.0" text-anchor="start">logs</text><rect class="n ext" x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="85.0" text-anchor="middle">Browser</text><rect class="n " x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="75" text-anchor="middle">CloudFront</text><text class="ns" x="362.0" y="92" text-anchor="middle">Caches the frontend</text><rect class="n " x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">S3 bucket</text><text class="ns" x="612.0" y="92" text-anchor="middle">Static frontend files</text><rect class="n " x="274" y="168" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="199" text-anchor="middle">API Gateway</text><text class="ns" x="362.0" y="216" text-anchor="middle">REST API, /items</text><rect class="n hot" x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="195" text-anchor="middle">Lambda</text><text class="ns" x="612.0" y="212" text-anchor="middle">get_items.py</text><text class="ns" x="612.0" y="227" text-anchor="middle">put_item.py</text><rect class="n " x="774" y="168" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="195" text-anchor="middle">DynamoDB</text><text class="ns" x="862.0" y="212" text-anchor="middle">Items table</text><text class="ns" x="862.0" y="227" text-anchor="middle">on-demand capacity</text><rect class="n " x="524" y="292" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="323" text-anchor="middle">CloudWatch Logs</text><text class="ns" x="612.0" y="340" text-anchor="middle">Every invocation</text></svg></div><figcaption>The browser loads the frontend through CloudFront and calls the API directly. Each Lambda function can reach only the one DynamoDB table.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>The browser requests the site. CloudFront serves the static frontend from an S3 bucket, with Route 53 handling DNS.</li><li>The frontend calls the REST API on API Gateway. <code>GET /items</code> and <code>POST /items</code> each map to their own Lambda function.</li><li><code>get_items.py</code> scans the table and returns the items as JSON. <code>put_item.py</code> gives each new item a UUID and writes it.</li><li>DynamoDB stores the data on on-demand capacity, so there is nothing to size in advance.</li><li>Both functions log to CloudWatch, and errors return a clean 500 response instead of a stack trace.</li></ol>
+      <h2>Why I built it</h2>
+      <p>This is the standard serverless pattern, and I wanted to understand it end to end. Building it showed me how API Gateway maps routes to Lambda integrations and how CloudFront caching behaves in front of an S3 origin.</p>
+      <h2>What I learned</h2>
+      <ul><li>How to scope an IAM execution role so a function can touch only the table it needs. The read function gets a read-only policy, and the write function gets a write-only one.</li><li>How API Gateway turns an HTTP request into a Lambda event, and what the function has to return for the response to be valid.</li><li>Why CORS headers matter when the frontend and the API live on different domains.</li></ul>
+      <h2>Least privilege in the SAM template</h2>
+      <pre tabindex="0"><code>GetItemsFunction:
+  Type: AWS::Serverless::Function
+  Properties:
+    Handler: get_items.handler
+    CodeUri: src/
+    Policies:
+      # read-only on this one table
+      - DynamoDBReadPolicy:
+          TableName: !Ref ItemsTable
+    Events:
+      GetItems:
+        Type: Api
+        Properties:
+          Path: /items
+          Method: get</code></pre>
+      <p class="note">The SAM template creates the API, both functions, the table and the frontend bucket. CloudFront and Route 53 sit in front of the bucket and are set up separately.</p>
+      <h2>What I would add next</h2>
+      <ul><li>A GitHub Actions pipeline that runs <code>sam deploy</code> on every push</li><li>Cognito sign-in for users</li><li>A CloudWatch dashboard for API latency and Lambda errors</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/m365-user-onboarding.html"><small>Previous project</small>Microsoft 365 user onboarding</a><a class="r" href="/projects/vpc-as-code.html"><small>Next project</small>VPC as code</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

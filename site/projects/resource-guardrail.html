@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cost and security guardrail | Vithushanth Chandrakumar</title>
+<meta name="description" content="A weekly Lambda report on what is costing money or weakening security in an AWS account: unattached volumes, idle Elastic IPs, untagged instances, open admin ports and S3 buckets without a public access block.">
+<link rel="canonical" href="https://vithu.cloud/projects/resource-guardrail.html">
+<meta name="theme-color" content="#F2F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10161F" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="vithu.cloud">
+<meta property="og:url" content="https://vithu.cloud/projects/resource-guardrail.html">
+<meta property="og:title" content="Cost and security guardrail | Vithushanth Chandrakumar">
+<meta property="og:description" content="A weekly Lambda report on what is costing money or weakening security in an AWS account: unattached volumes, idle Elastic IPs, untagged instances, open admin ports and S3 buckets without a public access block.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="top">
+  <div class="wrap">
+    <a class="site" href="/">vithu.cloud</a>
+    <nav aria-label="Main"><ul><li><a href="/">Home</a></li><li><a href="/projects.html" aria-current="page">Projects</a></li><li><a href="/notes.html">Notes</a></li><li><a href="/about.html">About</a></li><li><a href="/contact.html">Contact</a></li></ul></nav>
+  </div>
+</div>
+<main id="main">
+<article class="project">
+  <header class="phead"><div class="wrap">
+    <p class="crumb"><a href="/projects.html">Projects</a></p>
+    <h1>Cost and security guardrail</h1>
+    <p class="lede">A report that arrives every Monday with the forgotten resources and risky settings in an AWS account, so the cleanup gets done.</p>
+    <dl class="meta">
+      <div><dt>Built with</dt><dd>Lambda (Python 3.12), boto3, EventBridge, SNS, IAM, AWS SAM, pytest with moto</dd></div>
+    </dl>
+    <div class="actions"><a class="btn primary" href="https://github.com/vithushanth/aws-resource-guardrail" rel="noopener">View the code on GitHub</a></div>
+  </div></header>
+  <div class="wrap">
+    <figure class="diagram"><div class="scroll"><svg viewBox="0 0 974 268" role="img" aria-label="Architecture of the guardrail report" xmlns="http://www.w3.org/2000/svg"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="ah"/></marker></defs><path class="e" d="M200 80.0L274 80.0" marker-end="url(#ah)"/><path class="e" d="M450 80.0L524 80.0" marker-end="url(#ah)"/><text class="el" x="487.0" y="72.0" text-anchor="middle">describe</text><path class="e" d="M362.0 116L362.0 204.0L524 204.0" marker-end="url(#ah)"/><text class="el" x="370.0" y="164.0" text-anchor="start">findings</text><path class="e" d="M700 204.0L774 204.0" marker-end="url(#ah)"/><rect class="n " x="24" y="44" width="176" height="72" rx="10"/><text class="nt" x="112.0" y="75" text-anchor="middle">EventBridge</text><text class="ns" x="112.0" y="92" text-anchor="middle">Mondays 08:00 UTC</text><rect class="n hot" x="274" y="44" width="176" height="72" rx="10"/><text class="nt" x="362.0" y="71" text-anchor="middle">Lambda</text><text class="ns" x="362.0" y="88" text-anchor="middle">audit.py</text><text class="ns" x="362.0" y="103" text-anchor="middle">read-only role</text><rect class="n " x="524" y="44" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="75" text-anchor="middle">EC2 and S3 APIs</text><text class="ns" x="612.0" y="92" text-anchor="middle">Five checks</text><rect class="n " x="524" y="168" width="176" height="72" rx="10"/><text class="nt" x="612.0" y="199" text-anchor="middle">SNS topic</text><text class="ns" x="612.0" y="216" text-anchor="middle">Report</text><rect class="n ext" x="774" y="168" width="176" height="72" rx="10"/><text class="nt" x="862.0" y="199" text-anchor="middle">Email</text><text class="ns" x="862.0" y="216" text-anchor="middle">Subscribed address</text></svg></div><figcaption>The function can describe resources and publish to one topic. It cannot change or delete anything.</figcaption></figure>
+    <div class="prose">
+      <h2>How it works</h2>
+      <ol class="steps"><li>EventBridge runs the function every Monday at 08:00 UTC.</li><li>It lists EBS volumes that are not attached to anything and Elastic IPs that are not associated with anything.</li><li>It lists EC2 instances missing the required tags, which are <code>Owner</code> and <code>Project</code> by default.</li><li>It finds security groups that allow SSH or RDP from <code>0.0.0.0/0</code> or <code>::/0</code>.</li><li>It checks every S3 bucket for all four public access block settings.</li><li>It emails the findings through SNS and writes the same report to CloudWatch Logs.</li></ol>
+      <h2>Why I built it</h2>
+      <p>On a service desk, small things left alone become incidents. Cloud accounts are the same: a forgotten volume keeps billing and an open SSH rule keeps waiting. I wanted the cleanup list to arrive without anyone having to go looking.</p>
+      <h2>What I learned</h2>
+      <ul><li>Paginators, so every check still works in an account with hundreds of resources.</li><li>How to tell an "all traffic" rule from a port range when reading security group rules.</li><li>Testing against fake AWS services with moto. Each check has a test that creates a bad resource and a good one, and proves only the bad one is reported.</li></ul>
+      <h2>A read-only role</h2>
+      <pre tabindex="0"><code>Policies:
+  # read-only: the function reports problems, it never changes anything
+  - Statement:
+      - Effect: Allow
+        Action:
+          - ec2:DescribeInstances
+          - ec2:DescribeVolumes
+          - ec2:DescribeAddresses
+          - ec2:DescribeSecurityGroups
+          - s3:ListAllMyBuckets
+          - s3:GetBucketPublicAccessBlock
+        Resource: &quot;*&quot;
+  - SNSPublishMessagePolicy:
+      TopicName: !GetAtt ReportTopic.TopicName</code></pre>
+      <p class="note">Because the role cannot modify anything, the function is safe to run in any account, including production.</p>
+      <h2>What I would add next</h2>
+      <ul><li>Every region and every account in an AWS Organization</li><li>An estimated monthly cost next to each finding</li><li>AWS Config rules for the checks Config already supports</li></ul>
+    </div>
+    <nav class="prevnext" aria-label="More projects"><a href="/projects/private-photo-site.html"><small>Previous project</small>Private photo-sharing site</a><a class="r" href="/projects/m365-user-onboarding.html"><small>Next project</small>Microsoft 365 user onboarding</a></nav>
+  </div>
+</article>
+<section class="contact">
+  <div class="wrap"><div class="box">
+    <h2>Hiring for a junior cloud role?</h2>
+    <p>I am available immediately for junior cloud, AWS or DevOps roles in London, and for hybrid or remote roles across the UK. Email is the fastest way to reach me.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:vithushanth@gmail.com">vithushanth@gmail.com</a>
+      <a class="btn" href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/vithushanth" rel="noopener">GitHub</a>
+    </div>
+  </div></div>
+</section>
+</main>
+<footer>
+  <div class="wrap">
+    <p>© 2026 Vithushanth Chandrakumar<span id="visits" hidden></span></p>
+    <p><a href="mailto:vithushanth@gmail.com">Email</a> <a href="https://github.com/vithushanth" rel="noopener">GitHub</a> <a href="https://linkedin.com/in/vithu-shanth" rel="noopener">LinkedIn</a></p>
+    <p>Hosted on AWS with S3 and CloudFront. <a href="/projects/this-site.html">See how</a></p>
+  </div>
+</footer>
+<script src="/assets/config.js" defer></script>
+<script src="/assets/site.js" defer></script>
+</body>
+</html>

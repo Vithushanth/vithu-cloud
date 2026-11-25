@@ -1,0 +1,34 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "deploy.sh"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+# needed so GitHub can prove to AWS which repository is asking
+permissions:
+  id-token: write
+  contents: read
+
+concurrency: deploy-site
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # skipped until the AWS_DEPLOY_ROLE_ARN repository variable is set
+    if: ${{ vars.AWS_DEPLOY_ROLE_ARN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sign in to AWS with OIDC (no stored access keys)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-2
+
+      - name: Upload to S3 and clear the CloudFront cache
+        run: SKIP_BACKUP=1 bash deploy.sh
